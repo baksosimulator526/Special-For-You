@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Special For You ✨</title>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Animasi Perubahan Warna Background */
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Elemen Hati Melayang di Background */
+    .bg-hearts {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .heart-particle {
+      position: absolute;
+      bottom: -10%;
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 20px;
+      animation: floatUp 8s linear infinite;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0;
+      }
+      20% { opacity: 0.7; }
+      100% {
+        transform: translateY(-110vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    .container {
+      width: 100%;
+      max-width: 380px;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Animasi Masuk Card */
+    .card {
+      background: rgba(255, 255, 255, 0.90);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      padding: 25px 20px;
+      border-radius: 24px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      animation: zoomIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes zoomIn {
+      from {
+        opacity: 0;
+        transform: scale(0.8) translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    /* Animasi Goyang saat PIN Salah */
+    .shake {
+      animation: shake 0.4s ease-in-out;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-10px); }
+      40%, 80% { transform: translateX(10px); }
+    }
+
+    h2 {
+      color: #4a4a4a;
+      font-size: 18px;
+      margin-bottom: 6px;
+    }
+
+    .clue {
+      color: #666;
+      font-size: 13px;
+      font-style: italic;
+      margin-bottom: 20px;
+    }
+
+    /* Bulatan PIN */
+    .pin-dots {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .dot {
+      width: 16px;
+      height: 16px;
+      border: 2px solid #e73c7e;
+      border-radius: 50%;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .dot.filled {
+      background: #e73c7e;
+      border-color: #e73c7e;
+      transform: scale(1.1);
+    }
+
+    /* Keypad Tombol */
+    .keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      max-width: 260px;
+      margin: 0 auto;
+    }
+
+    .key {
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      padding: 15px 0;
+      border-radius: 50%;
+      font-size: 18px;
+      font-weight: bold;
+      color: #2f3542;
+      cursor: pointer;
+      transition: all 0.2s;
+      width: 60px;
+      height: 60px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+    .key:active {
+      background: #e73c7e;
+      color: white;
+      transform: scale(0.92);
+    }
+
+    .action-btn {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 12px 22px;
+      background: linear-gradient(135deg, #e73c7e, #ee7752);
+      color: white;
+      text-decoration: none;
+      border: none;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(231, 60, 126, 0.4);
+      transition: 0.3s;
+    }
+
+    .action-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(231, 60, 126, 0.5);
+    }
+
+    /* Animasi Membesar & Mengecil (Pulse) Khusus Tombol Balas WA */
+    .reply-btn {
+      background: #25d366;
+      box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+      margin-top: 20px;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
+      }
+      70% {
+        transform: scale(1.08);
+        box-shadow: 0 0 0 12px rgba(37, 211, 102, 0);
+      }
+      100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+      }
+    }
+
+    .wa-btn-pop {
+      background: #25d366;
+      box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);
+    }
+
+    .photo-wrapper img {
+      width: 100%;
+      max-height: 250px;
+      object-fit: cover;
+      border-radius: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    }
+
+    h1 {
+      color: #e73c7e;
+      font-size: 20px;
+      margin-bottom: 15px;
+    }
+
+    .typed-text {
+      color: #333;
+      font-size: 13.5px;
+      line-height: 1.7;
+      text-align: left;
+      white-space: pre-line;
+    }
+
+    /* Modal / Pop Up Kustom */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(4px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+      padding: 20px;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .modal-box {
+      background: white;
+      padding: 25px 20px;
+      border-radius: 20px;
+      text-align: center;
+      max-width: 320px;
+      width: 100%;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      animation: popUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .modal-box p {
+      font-size: 15px;
+      color: #333;
+      font-weight: 600;
+      line-height: 1.5;
+      margin-bottom: 15px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes popUp {
+      from { transform: scale(0.7); }
+      to { transform: scale(1); }
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-hearts" id="hearts-container"></div>
+
+  <div id="custom-popup" class="modal-overlay hidden">
+    <div class="modal-box">
+      <p id="popup-text">ihh.. masakkk lupaa sihh😠</p>
+      
+      <a id="popup-wa-btn" class="action-btn wa-btn-pop hidden" href="https://whatsapp.com/channel/0029VbDReRzLI8YY3UaKyW3X" target="_blank">
+        Minta PIN di Saluran WA 📢
+      </a>
+      <br id="br-space" class="hidden">
+      
+      <button class="action-btn" onclick="closePopup()">Coba Lagi 🔁</button>
+    </div>
+  </div>
+
+  <div id="login-section" class="container">
+    <div class="card" id="lock-card">
+      <h2>Coba Tebak PIN-nya ya 🔐</h2>
+      <p class="clue">"Tanggal yang sangat berarti buat kita..."</p>
+      
+      <div class="pin-dots">
+        <div class="dot" id="dot-0"></div>
+        <div class="dot" id="dot-1"></div>
+        <div class="dot" id="dot-2"></div>
+        <div class="dot" id="dot-3"></div>
+      </div>
+
+      <div class="keypad">
+        <button class="key" onclick="pressKey('1')">1</button>
+        <button class="key" onclick="pressKey('2')">2</button>
+        <button class="key" onclick="pressKey('3')">3</button>
+        <button class="key" onclick="pressKey('4')">4</button>
+        <button class="key" onclick="pressKey('5')">5</button>
+        <button class="key" onclick="pressKey('6')">6</button>
+        <button class="key" onclick="pressKey('7')">7</button>
+        <button class="key" onclick="pressKey('8')">8</button>
+        <button class="key" onclick="pressKey('9')">9</button>
+        <button class="key" style="visibility: hidden;"></button>
+        <button class="key" onclick="pressKey('0')">0</button>
+        <button class="key" onclick="deleteKey()">⌫</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="story-section" class="container hidden">
+    <div class="card">
+      <h1>Kenapa 25 Desember? 🤍</h1>
+      <p id="story-text" class="typed-text"></p>
+      <button id="next-btn" class="action-btn hidden" onclick="goToBirthdayContent()">Lanjut ke Ucapan ✨</button>
+    </div>
+  </div>
+
+  <div id="content-section" class="container hidden">
+    <div class="card main-card">
+      <div class="photo-wrapper">
+        <img id="foto-bersama" src="foto.jpg" alt="Foto Kenangan">
+      </div>
+
+      <h1>Happy Birthday Sayang! 🎉✨</h1>
+      
+      <p id="typed-text" class="typed-text"></p>
+
+      <a id="reply-wa-btn" class="action-btn reply-btn hidden" href="#" target="_blank">
+        Balas Pesan ke WA 💬❤️
+      </a>
+
+      <audio id="bg-music" loop preload="auto">
+        <source src="lagu.mp3" type="audio/mpeg">
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+      </audio>
+    </div>
+  </div>
+
+  <script>
+    // GANTI DENGAN NOMOR WA KAMU (Gunakan awalan 62)
+    const NOMOR_WA_KAMU = "6281234567890";
+    
+    // Teks pesan otomatis yang sudah aman dari karakter wajik/karakter rusak
+    const PESAN_BALASAN = encodeURIComponent("Makasiiiii banyaaakk yaa sayangg ucapan dan websitenyaa, sukaaa bangett! ❤️✨");
+
+    // Membuat Efek Hati Melayang Secara Otomatis
+    function createHearts() {
+      const container = document.getElementById("hearts-container");
+      const icons = ["🤍", "💖", "✨", "🌸", "💕"];
+      
+      for (let i = 0; i < 20; i++) {
+        const heart = document.createElement("div");
+        heart.classList.add("heart-particle");
+        heart.innerText = icons[Math.floor(Math.random() * icons.length)];
+        heart.style.left = Math.random() * 100 + "%";
+        heart.style.animationDuration = (Math.random() * 5 + 5) + "s";
+        heart.style.animationDelay = (Math.random() * 5) + "s";
+        heart.style.fontSize = (Math.random() * 15 + 15) + "px";
+        container.appendChild(heart);
+      }
+    }
+    createHearts();
+
+    let currentPin = "";
+    let attempts = 0;
+    
+    // PIN BENAR = 2512 (25 Desember)
+    const CORRECT_PIN = "2512";
+
+    // TEKS 1: CERITA 25 DESEMBER
+    const ceritaPesan = `karenaa dii tanggalll ituu... kitaa awall mulaa mengungkapkann perasaann... 🥺🤍
+
+ingatt kann? waktuuu kamuu bikinn sw dalamm bahasaa inggris yangg kaloo dii translatee:
+
+"jikaa sampaii tahunn baruu akuu belumm bisaa memilikiimuu, maka akuu akann melupakanmuu..."
+
+dann akuu balass... ituu awall mulaa kitaa bersamaa :)`;
+
+    // TEKS 2: UCAPAN ULANG TAHUN
+    const ucapanPesan = `Haiii aloOooo selamattt ulanggg tahunnn sayangggkuuuu cintakuuuuu duniakuuuuu bayiii kecilkuuuuu priiincesss kecilkuuuu 🥹🤍
+
+ciee udaa limaa belass tahunnn niiee yeee ?!?! wishhh u all the best yawww, semogaaa citaa citaaa yangg sayangg inginnnkannn bisaaa terwujuddd yaaa, panjanggg umurrrr, sehatttt selaluuuu anndd berbaktii kepadaaa oranggg tuaa, aminnn 🤲🏻
+
+semangatttt terusss yaaa sayangg, jangannnnn pernaaaa putussss asaaa buattt ngejarrrr impiannn sayangg, aku selaluuu dukunggg andd supporttt mineee. semogaaa dii umurrrr yangg baruuu iniii banyaaakkk keberkahannn buatt sayangg, jangannn lupaaa bersyukurrrr yaaa 🤍
+
+terimakasiii udaaaa mauuu sabarrrr samaaa aku, makasiii jugaaa udaaa sayanggg kee aku hwhehee. semogaaa tahunnn iniii akann lebii baikkkk dariii tahunnn sebelumnyaa, semogaaa sayangg bisaaa jadiii oranggg yangg suksesss, oranggg yangg bisaaa membanggakannn oranggg tuaaa.
+
+pokonyaa aku selaluuu doa'innn yangg terbaikkk buatt sayangg, semogaaa semuaaa yangg sayangg inginkannn bisaaa tercapaiii satuu persatuuuu 🥹🤍
+
+happyyy birthdayyy yaaa sayanggg, im so proud of uuuu. hadiaaanyaaaa besooo kalooo ketemuuu, okeeiiiii cantii? 😭🤍
+
+sekaliii lagiii happyyy birthdayyy sayangggkuuuu, semangatttt trusss buatt ngejalaninnnn harii hariinyaaa, i always support uuuu. semogaaaa aku bisaaa nemeninnn sayangg terusss diii thee nextt birthdayyy, okeeiiiii cantii? 😘
+
+love u moreee princessss kecilllkuuuu 🤍
+
+maaf webnya belum sempurnaa :) akuu baru belajar hehee...`;
+
+    function pressKey(num) {
+      if (currentPin.length < 4) {
+        currentPin += num;
+        updateDots();
+      }
+      
+      if (currentPin.length === 4) {
+        setTimeout(checkPin, 150);
+      }
+    }
+
+    function deleteKey() {
+      if (currentPin.length > 0) {
+        currentPin = currentPin.slice(0, -1);
+        updateDots();
+      }
+    }
+
+    function updateDots() {
+      for (let i = 0; i < 4; i++) {
+        const dot = document.getElementById(`dot-${i}`);
+        if (i < currentPin.length) {
+          dot.classList.add("filled");
+        } else {
+          dot.classList.remove("filled");
+        }
+      }
+    }
+
+    function checkPin() {
+      const card = document.getElementById("lock-card");
+      
+      if (currentPin === CORRECT_PIN) {
+        showStoryContent();
+      } else {
+        attempts++;
+        currentPin = "";
+        updateDots();
+        
+        // Efek Shake Card
+        card.classList.add("shake");
+        setTimeout(() => card.classList.remove("shake"), 400);
+
+        // Tampilkan Custom Pop Up
+        showPopup();
+      }
+    }
+
+    function showPopup() {
+      const popup = document.getElementById("custom-popup");
+      const popupText = document.getElementById("popup-text");
+      const waBtn = document.getElementById("popup-wa-btn");
+      const brSpace = document.getElementById("br-space");
+
+      if (attempts === 1) {
+        popupText.innerText = "ihh.. masakkk lupaa sihh😠";
+      } else if (attempts === 2) {
+        popupText.innerText = "parahhh bangett ihh, masa tanggal sendiri lupa! 😤";
+      } else {
+        popupText.innerText = "Duhh udah 3x salah nih! Buka saluran WA aku aja gih buat liat kodenya 😜";
+        waBtn.classList.remove("hidden");
+        brSpace.classList.remove("hidden");
+      }
+
+      popup.classList.remove("hidden");
+    }
+
+    function closePopup() {
+      document.getElementById("custom-popup").classList.add("hidden");
+    }
+
+    function showStoryContent() {
+      // Putar Musik
+      const music = document.getElementById("bg-music");
+      music.play().catch(() => console.log("Audio diblokir browser"));
+
+      document.getElementById("login-section").classList.add("hidden");
+      document.getElementById("story-section").classList.remove("hidden");
+
+      // Ketik Teks Cerita 25 Des
+      typeWriter(ceritaPesan, "story-text", 30, () => {
+        document.getElementById("next-btn").classList.remove("hidden");
+      });
+    }
+
+    function goToBirthdayContent() {
+      document.getElementById("story-section").classList.add("hidden");
+      document.getElementById("content-section").classList.remove("hidden");
+
+      // Konfeti
+      confetti({
+        particleCount: 120,
+        spread: 80,
+        origin: { y: 0.6 }
+      });
+
+      // Ketik Teks Ucapan Ultah
+      typeWriter(ucapanPesan, "typed-text", 25, () => {
+        // Tampilkan Tombol Balas ke WA setelah pengetikan ucapan selesai
+        const replyBtn = document.getElementById("reply-wa-btn");
+        replyBtn.href = `https://wa.me/${NOMOR_WA_KAMU}?text=${PESAN_BALASAN}`;
+        replyBtn.classList.remove("hidden");
+      });
+    }
+
+    function typeWriter(text, elementId, speed, callback) {
+      let index = 0;
+      const element = document.getElementById(elementId);
+      element.innerHTML = "";
+
+      function type() {
+        if (index < text.length) {
+          element.innerHTML += text.charAt(index);
+          index++;
+          setTimeout(type, speed);
+        } else if (callback) {
+          callback();
+        }
+      }
+      type();
+    }
+  </script>
+</body>
+</html>
