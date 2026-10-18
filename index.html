@@ -349,4 +349,211 @@
     <div class="card">
       <h1>Kenapa 25 Desember? 🤍</h1>
       <p id="story-text" class="typed-text"></p>
-      <button id="next-btn" class="action-btn hidden" onclick="goToBirthdayContent()">Lanjut ke Ucapan ✨</button
+      <button id="next-btn" class="action-btn hidden" onclick="goToBirthdayContent()">Lanjut ke Ucapan ✨</button>
+    </div>
+  </div>
+
+  <div id="content-section" class="container hidden">
+    <div class="card main-card">
+      <div class="photo-wrapper">
+        <img id="foto-bersama" src="foto.jpg" alt="Foto Kenangan">
+      </div>
+
+      <h1>Happy Birthday Sayang! 🎉✨</h1>
+      
+      <p id="typed-text" class="typed-text"></p>
+
+      <a id="reply-wa-btn" class="action-btn reply-btn hidden" href="#" target="_blank">
+        Balas Pesan ke WA 💬❤️
+      </a>
+
+      <audio id="bg-music" loop preload="auto">
+        <source src="lagu.mp3" type="audio/mpeg">
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+      </audio>
+    </div>
+  </div>
+
+  <script>
+    // GANTI DENGAN NOMOR WA KAMU (Gunakan awalan 62)
+    const NOMOR_WA_KAMU = "6281234567890";
+    
+    // Teks pesan otomatis yang sudah aman dari karakter wajik/karakter rusak
+    const PESAN_BALASAN = encodeURIComponent("Makasiiiii banyaaakk yaa sayangg ucapan dan websitenyaa, sukaaa bangett! ❤️✨");
+
+    // Membuat Efek Hati Melayang Secara Otomatis
+    function createHearts() {
+      const container = document.getElementById("hearts-container");
+      const icons = ["🤍", "💖", "✨", "🌸", "💕"];
+      
+      for (let i = 0; i < 20; i++) {
+        const heart = document.createElement("div");
+        heart.classList.add("heart-particle");
+        heart.innerText = icons[Math.floor(Math.random() * icons.length)];
+        heart.style.left = Math.random() * 100 + "%";
+        heart.style.animationDuration = (Math.random() * 5 + 5) + "s";
+        heart.style.animationDelay = (Math.random() * 5) + "s";
+        heart.style.fontSize = (Math.random() * 15 + 15) + "px";
+        container.appendChild(heart);
+      }
+    }
+    createHearts();
+
+    let currentPin = "";
+    let attempts = 0;
+    
+    // PIN BENAR = 2512 (25 Desember)
+    const CORRECT_PIN = "2512";
+
+    // TEKS 1: CERITA 25 DESEMBER
+    const ceritaPesan = `karenaa dii tanggalll ituu... kitaa awall mulaa mengungkapkann perasaann... 🥺🤍
+
+ingatt kann? waktuuu kamuu bikinn sw dalamm bahasaa inggris yangg kaloo dii translatee:
+
+"jikaa sampaii tahunn baruu akuu belumm bisaa memilikiimuu, maka akuu akann melupakanmuu..."
+
+dann akuu balass... ituu awall mulaa kitaa bersamaa :)`;
+
+    // TEKS 2: UCAPAN ULANG TAHUN
+    const ucapanPesan = `Haiii aloOooo selamattt ulanggg tahunnn sayangggkuuuu cintakuuuuu duniakuuuuu bayiii kecilkuuuuu priiincesss kecilkuuuu 🥹🤍
+
+ciee udaa limaa belass tahunnn niiee yeee ?!?! wishhh u all the best yawww, semogaaa citaa citaaa yangg sayangg inginnnkannn bisaaa terwujuddd yaaa, panjanggg umurrrr, sehatttt selaluuuu anndd berbaktii kepadaaa oranggg tuaa, aminnn 🤲🏻
+
+semangatttt terusss yaaa sayangg, jangannnnn pernaaaa putussss asaaa buattt ngejarrrr impiannn sayangg, aku selaluuu dukunggg andd supporttt mineee. semogaaa dii umurrrr yangg baruuu iniii banyaaakkk keberkahannn buatt sayangg, jangannn lupaaa bersyukurrrr yaaa 🤍
+
+terimakasiii udaaaa mauuu sabarrrr samaaa aku, makasiii jugaaa udaaa sayanggg kee aku hwhehee. semogaaa tahunnn iniii akann lebii baikkkk dariii tahunnn sebelumnyaa, semogaaa sayangg bisaaa jadiii oranggg yangg suksesss, oranggg yangg bisaaa membanggakannn oranggg tuaaa.
+
+pokonyaa aku selaluuu doa'innn yangg terbaikkk buatt sayangg, semogaaa semuaaa yangg sayangg inginkannn bisaaa tercapaiii satuu persatuuuu 🥹🤍
+
+happyyy birthdayyy yaaa sayanggg, im so proud of uuuu. hadiaaanyaaaa besooo kalooo ketemuuu, okeeiiiii cantii? 😭🤍
+
+sekaliii lagiii happyyy birthdayyy sayangggkuuuu, semangatttt trusss buatt ngejalaninnnn harii hariinyaaa, i always support uuuu. semogaaaa aku bisaaa nemeninnn sayangg terusss diii thee nextt birthdayyy, okeeiiiii cantii? 😘
+
+love u moreee princessss kecilllkuuuu 🤍
+
+maaf webnya belum sempurnaa :) akuu baru belajar hehee...`;
+
+    function pressKey(num) {
+      if (currentPin.length < 4) {
+        currentPin += num;
+        updateDots();
+      }
+      
+      if (currentPin.length === 4) {
+        setTimeout(checkPin, 150);
+      }
+    }
+
+    function deleteKey() {
+      if (currentPin.length > 0) {
+        currentPin = currentPin.slice(0, -1);
+        updateDots();
+      }
+    }
+
+    function updateDots() {
+      for (let i = 0; i < 4; i++) {
+        const dot = document.getElementById(`dot-${i}`);
+        if (i < currentPin.length) {
+          dot.classList.add("filled");
+        } else {
+          dot.classList.remove("filled");
+        }
+      }
+    }
+
+    function checkPin() {
+      const card = document.getElementById("lock-card");
+      
+      if (currentPin === CORRECT_PIN) {
+        showStoryContent();
+      } else {
+        attempts++;
+        currentPin = "";
+        updateDots();
+        
+        // Efek Shake Card
+        card.classList.add("shake");
+        setTimeout(() => card.classList.remove("shake"), 400);
+
+        // Tampilkan Custom Pop Up
+        showPopup();
+      }
+    }
+
+    function showPopup() {
+      const popup = document.getElementById("custom-popup");
+      const popupText = document.getElementById("popup-text");
+      const waBtn = document.getElementById("popup-wa-btn");
+      const brSpace = document.getElementById("br-space");
+
+      if (attempts === 1) {
+        popupText.innerText = "ihh.. masakkk lupaa sihh😠";
+      } else if (attempts === 2) {
+        popupText.innerText = "parahhh bangett ihh, masa tanggal sendiri lupa! 😤";
+      } else {
+        popupText.innerText = "Duhh udah 3x salah nih! Buka saluran WA aku aja gih buat liat kodenya 😜";
+        waBtn.classList.remove("hidden");
+        brSpace.classList.remove("hidden");
+      }
+
+      popup.classList.remove("hidden");
+    }
+
+    function closePopup() {
+      document.getElementById("custom-popup").classList.add("hidden");
+    }
+
+    function showStoryContent() {
+      // Putar Musik
+      const music = document.getElementById("bg-music");
+      music.play().catch(() => console.log("Audio diblokir browser"));
+
+      document.getElementById("login-section").classList.add("hidden");
+      document.getElementById("story-section").classList.remove("hidden");
+
+      // Ketik Teks Cerita 25 Des
+      typeWriter(ceritaPesan, "story-text", 30, () => {
+        document.getElementById("next-btn").classList.remove("hidden");
+      });
+    }
+
+    function goToBirthdayContent() {
+      document.getElementById("story-section").classList.add("hidden");
+      document.getElementById("content-section").classList.remove("hidden");
+
+      // Konfeti
+      confetti({
+        particleCount: 120,
+        spread: 80,
+        origin: { y: 0.6 }
+      });
+
+      // Ketik Teks Ucapan Ultah
+      typeWriter(ucapanPesan, "typed-text", 25, () => {
+        // Tampilkan Tombol Balas ke WA setelah pengetikan ucapan selesai
+        const replyBtn = document.getElementById("reply-wa-btn");
+        replyBtn.href = `https://wa.me/${NOMOR_WA_KAMU}?text=${PESAN_BALASAN}`;
+        replyBtn.classList.remove("hidden");
+      });
+    }
+
+    function typeWriter(text, elementId, speed, callback) {
+      let index = 0;
+      const element = document.getElementById(elementId);
+      element.innerHTML = "";
+
+      function type() {
+        if (index < text.length) {
+          element.innerHTML += text.charAt(index);
+          index++;
+          setTimeout(type, speed);
+        } else if (callback) {
+          callback();
+        }
+      }
+      type();
+    }
+  </script>
+</body>
+</html>
