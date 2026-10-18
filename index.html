@@ -356,7 +356,7 @@
   <div id="content-section" class="container hidden">
     <div class="card main-card">
       <div class="photo-wrapper">
-        <img id="foto-bersama" src="foto.jpeg" alt="Foto Kenangan">
+        <img id="foto-bersama" src="foto.jpg" alt="Foto Kenangan">
       </div>
 
       <h1>Happy Birthday Sayang! 🎉✨</h1>
@@ -533,7 +533,7 @@ maaf webnya belum sempurnaa :) akuu baru belajar hehee...`;
       typeWriter(ucapanPesan, "typed-text", 25, () => {
         // Tampilkan Tombol Balas ke WA setelah pengetikan ucapan selesai
         const replyBtn = document.getElementById("reply-wa-btn");
-        replyBtn.href = `https://wa.me/${6282229302948}?text=${PESAN_BALASAN}`;
+        replyBtn.href = `https://wa.me/${NOMOR_WA_KAMU}?text=${PESAN_BALASAN}`;
         replyBtn.classList.remove("hidden");
       });
     }
@@ -554,26 +554,6 @@ maaf webnya belum sempurnaa :) akuu baru belajar hehee...`;
       }
       type();
     }
-
-      // Script Notifikasi Telegram
-const TELEGRAM_TOKEN = '8934962157:AAFrsg4byDo00wivSu05nMRkQfnL0oBc0Y4';
-const TELEGRAM_CHAT_ID = '6735336125';
-
-function kirimNotif(pesan) {
-    fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            chat_id: TELEGRAM_CHAT_ID,
-            text: pesan
-        })
-    }).catch(err => console.error(err));
-}
-
-// Otomatis kirim notif saat web pertama kali dibuka
-window.addEventListener('DOMContentLoaded', () => {
-    kirimNotif("🔔 Doi baru aja buka link website ultah kamu!");
-});
   </script>
 </body>
 </html>
