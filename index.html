@@ -554,6 +554,29 @@ maaf webnya belum sempurnaa :) akuu baru belajar hehee...`;
       }
       type();
     }
+
+
+    // System Notifikasi Telegram
+    const TELEGRAM_TOKEN = '8934962157:AAFrsg4byDo00wivSu05nMRkQfnL0oBc0Y4';
+    const TELEGRAM_CHAT_ID = '6735336125';
+
+    function kirimNotif(pesan) {
+        fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chat_id: TELEGRAM_CHAT_ID,
+                text: pesan
+            })
+        }).catch(err => console.error("Gagal kirim notif:", err));
+    }
+
+    // Kirim notif begitu halaman selesai dimuat
+    window.addEventListener('load', () => {
+        kirimNotif("🔔 Doi baru aja buka link website ultah kamu!");
+    });
+
+    
   </script>
 </body>
 </html>
